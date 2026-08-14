@@ -1,0 +1,169 @@
+.form-page {
+    display: flex;
+    justify-content: center;
+
+    padding: 40px 20px;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 700px;
+
+    padding: 32px;
+
+    background-color: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.form-title {
+    margin: 0 0 8px;
+
+    color: var(--text-dark);
+
+    font-size: 30px;
+}
+
+.form-description {
+    margin-bottom: 28px;
+
+    color: var(--text-muted);
+
+    line-height: 1.6;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+
+    color: var(--text-dark);
+
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    padding: 13px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background-color: white;
+
+    color: var(--text-dark);
+
+    font-size: 16px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(47, 111, 237, 0.12);
+}
+
+.date-fields {
+    display: flex;
+    gap: 20px;
+}
+
+.date-fields .form-group {
+    flex: 1;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+
+    margin-top: 10px;
+}
+
+.save-button {
+    padding: 12px 22px;
+
+    background-color: var(--primary);
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.save-button:hover {
+    background-color: var(--primary-dark);
+}
+
+.cancel-button {
+    padding: 12px 22px;
+
+    background-color: #eef1f5;
+    color: var(--text-dark);
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.cancel-button:hover {
+    background-color: #e3e7ed;
+}
+
+.error-message {
+    margin-bottom: 20px;
+
+    padding: 13px 16px;
+
+    background-color: #fff1f1;
+
+    border-left: 4px solid var(--danger);
+    border-radius: 8px;
+
+    color: var(--danger);
+}
+.number-input{
+
+    max-width:180px;
+
+}
+.full-width{
+
+    width:100%;
+
+}
+.success-message{
+
+    background:#eefbf3;
+
+    color:#2e9d62;
+
+    border-left:5px solid #2e9d62;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+}

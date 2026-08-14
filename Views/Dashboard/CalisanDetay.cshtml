@@ -1,0 +1,130 @@
+@model KpiVerimlilikTakip.Models.ViewModels.CalisanDetayVM
+
+@{
+    ViewData["Title"] = "Çalışan Detayı";
+}
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+
+        <div>
+            <h1 class="dashboard-title">
+                @Model.AdSoyad
+            </h1>
+
+            <p class="welcome-text">
+                @Model.Gorev · @Model.Email
+            </p>
+        </div>
+
+        <a asp-controller="Dashboard"
+           asp-action="Index"
+           class="dashboard-button">
+            Yönetici Paneline Dön
+        </a>
+
+    </div>
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card hedef-card">
+            <h3>🎯 Toplam Hedef</h3>
+            <h2>@Model.ToplamHedefSayisi</h2>
+        </div>
+
+        <div class="dashboard-card tamamlanan-card">
+            <h3>✅ Tamamlanan</h3>
+            <h2>@Model.ToplamTamamlananAdet</h2>
+        </div>
+
+        <div class="dashboard-card basari-card">
+            <h3>📈 Genel Başarı</h3>
+            <h2>%@Model.GenelBasariYuzdesi.ToString("0.##")</h2>
+        </div>
+
+    </div>
+
+    <div class="dashboard-actions">
+
+        <a asp-controller="Hedef"
+           asp-action="YeniHedef"
+           asp-route-kisiId="@Model.CalisanId"
+           class="dashboard-button">
+            Hedef Ata
+        </a>
+
+    </div>
+
+    <h2 class="section-title">
+        Hedefler
+    </h2>
+
+    @if (Model.Hedefler.Count == 0)
+    {
+        <p>Bu çalışana ait hedef bulunmuyor.</p>
+    }
+    else
+    {
+        <div class="table-container">
+
+            <table class="dashboard-table">
+
+                <thead>
+                    <tr>
+                        <th>İş</th>
+                        <th>Hedef</th>
+                        <th>Tamamlanan</th>
+                        <th>Başarı</th>
+                        <th>Dönem</th>
+                        <th>Başlangıç</th>
+                        <th>Bitiş</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var hedef in Model.Hedefler)
+                    {
+                        var progressWidth =
+                            Math.Min(hedef.BasariYuzdesi, 100);
+
+                        <tr>
+                            <td>@hedef.IsAdi</td>
+                            <td>@hedef.HedefAdet</td>
+                            <td>@hedef.TamamlananAdet</td>
+
+                            <td>
+                                <div class="progress">
+
+                                    <div class="progress-bar"
+                                         style="width:@progressWidth%">
+                                    </div>
+
+                                </div>
+
+                                <span>
+                                    %@hedef.BasariYuzdesi.ToString("0.##")
+                                </span>
+                            </td>
+
+                            <td>@hedef.DonemTipi</td>
+
+                            <td>
+                                @hedef.BaslangicTarihi.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                @hedef.BitisTarihi.ToString("dd.MM.yyyy")
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

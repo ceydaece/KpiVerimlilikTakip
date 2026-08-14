@@ -1,0 +1,209 @@
+@model KpiVerimlilikTakip.Models.ViewModels.DashboardVM
+
+@{
+    ViewData["Title"] = "Yönetici Paneli";
+}
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+       <div>
+                    <div class="dashboard-brand">
+
+                        <img src="~/images/biltas-logo-light.png"
+                            alt="Biltaş Logo"
+                            class="dashboard-logo" />
+
+                        @*<span class="app-name">
+                            KPI Verimlilik Sistemi
+                        </span>*@  
+                        <h1 class="dashboard-title">
+                 KPI Verimlilik Sistemi Yönetici Paneli
+                        </h1>
+
+                    </div>
+        
+          
+        
+
+            <p class="welcome-text">
+                Hoş geldin,
+                @Context.Session.GetString("AdSoyad")
+            </p>
+        </div>
+
+                <div class="today-date">
+                    @DateTime.Today.ToString("dd MMMM yyyy")
+                </div>
+
+    </div>
+
+
+    <!-- KPI KARTLARI -->
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+            <h3>👥 Toplam Çalışan</h3>
+            <h2>@Model.ToplamCalisan</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>🎯 Atanan Hedef</h3>
+            <h2>@Model.ToplamAtananHedef</h2>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>📈 Ortalama Başarı</h3>
+            <h2>%@Model.OrtalamaBasari.ToString("0.##")</h2>
+        </div>
+
+        <div class="dashboard-card danger-card">
+            <h3>⚠️ Geciken Hedef</h3>
+            <h2>@Model.GecikenHedefSayisi</h2>
+        </div>
+
+    </div>
+
+
+    <!-- AI EKİP ANALİZİ -->
+
+    <div class="ai-manager-card">
+
+        <div class="ai-title">
+            🤖 AI Ekip Danışmanı
+        </div>
+
+        <p class="ai-subtitle">
+            Ekibinizin KPI sonuçlarını yapay zekâ ile analiz edin.
+        </p>
+
+        @if (string.IsNullOrWhiteSpace(Model.YoneticiAIOnerisi))
+        {
+            <p class="ai-empty">
+                Henüz ekip analizi oluşturulmadı.
+            </p>
+
+            <form asp-controller="Dashboard"
+                  asp-action="YoneticiAiAnalizi"
+                  method="post">
+
+                <button type="submit"
+                        class="button button-primary">
+                    AI Ekip Analizi Oluştur
+                </button>
+
+            </form>
+        }
+        else
+        {
+            <div class="ai-manager-content">
+                @Model.YoneticiAIOnerisi
+            </div>
+
+            <form asp-controller="Dashboard"
+                  asp-action="YoneticiAiAnalizi"
+                  method="post">
+
+                <button type="submit"
+                        class="button button-primary">
+                    Yeniden Analiz Et
+                </button>
+
+            </form>
+        }
+
+    </div>
+
+
+    <!-- ÇALIŞANLAR -->
+
+    <div class="section-header">
+
+        <h2 class="section-title">
+            👥 Çalışanlarım
+        </h2>
+            <a asp-controller="Hedef"
+           asp-action="YeniHedef"
+           class="button button-primary">
+            + Hedef Ata
+            </a>
+
+    </div>
+
+    @if (Model.Calisanlar.Count == 0)
+    {
+        <div class="card">
+            Henüz size bağlı çalışan bulunmuyor.
+        </div>
+    }
+    else
+    {
+        <div class="table-container">
+
+            <table class="dashboard-table">
+
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Görev</th>
+                        <th>E-posta</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var calisan in Model.Calisanlar)
+                    {
+                        <tr>
+
+                            <td>@calisan.AdSoyad</td>
+
+                            <td>@calisan.Gorev</td>
+
+                            <td>@calisan.Email</td>
+
+                            <td>
+
+                                <a asp-controller="Hedef"
+                                   asp-action="YeniHedef"
+                                   asp-route-kisiId="@calisan.Id"
+                                   class="button button-success">
+                                    Hedef Ata
+                                </a>
+
+                                <a asp-controller="Dashboard"
+                                   asp-action="CalisanDetay"
+                                   asp-route-id="@calisan.Id"
+                                   class="button button-secondary">
+                                    Detay
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+
+
+<div class="dashboard-actions">
+    
+    <a class="dashboard-button" href="/Rapor/Index">
+        Verimlilik Raporu
+    </a>
+    <a class="dashboard-button" href="/Account/Login">
+        çıkış
+    </a>
+   
+
+</div> <!-- dashboard-actions -->
+
+</div> <!-- dashboard-container -->

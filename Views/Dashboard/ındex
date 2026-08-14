@@ -1,0 +1,307 @@
+@model KpiVerimlilikTakip.Models.ViewModels.DashboardVM
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="dashboard-container">
+<div class="dashboard-header">
+
+    <div>
+
+        <h1 class="dashboard-title">
+            Dashboard
+        </h1>
+
+        <p class="welcome-text">
+            Hoş geldin,
+            @Context.Session.GetString("AdSoyad")
+        </p>
+
+    </div>
+
+</div>
+<div class="today-date">
+
+    @DateTime.Now.ToString("dd MMMM yyyy")
+
+</div>
+<form method="get" asp-action="Index">
+
+    <div class="search-container">
+
+    <input
+        class="search-input"
+        type="text"
+        name="arama"
+        placeholder="🔍 İş adı ara..." />
+
+    <button class="search-button">
+        Ara
+    </button>
+
+    <a class="clear-button"
+       href="/Dashboard">
+        Temizle
+    </a>
+
+</div>
+</form>
+
+<br />
+
+<hr />
+
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card hedef-card">
+        <h3>🎯 Toplam Hedef</h3>
+        <h2>@Model.ToplamHedefSayisi</h2>
+    </div>
+
+    <div class="dashboard-card tamamlanan-card">
+        <h3>✅ Tamamlanan</h3>
+        <h2>@Model.ToplamTamamlananAdet</h2>
+    </div>
+
+    <div class="dashboard-card basari-card">
+        <h3>📈 Genel Başarı</h3>
+        <h2>%@Model.GenelBasariYuzdesi.ToString("0.##")</h2>
+    </div>
+
+</div>
+<div class="ai-card">
+
+    <div class="ai-title">
+        🤖 AI Verimlilik Önerisi
+    </div>
+
+    <div class="ai-content">
+
+        @if (!string.IsNullOrEmpty(Model.AIOnerisi))
+        {
+            @Model.AIOnerisi
+        }
+        else
+        {
+            <span>Henüz AI önerisi oluşturulmadı.</span>
+        }
+
+    </div>
+
+</div>
+<div class="upcoming-section">
+
+    <h2 class="section-title">
+        📅 Yaklaşan Hedefler
+    </h2>
+
+    @if (Model.YaklasanHedefler.Count == 0)
+    {
+        <p class="upcoming-empty">
+            Önümüzdeki 3 gün içinde bitecek hedefiniz bulunmuyor.
+        </p>
+    }
+    else
+    {
+        <div class="upcoming-list">
+
+            @foreach (var hedef in Model.YaklasanHedefler)
+            {
+                var kalanGun =
+                    (hedef.BitisTarihi.Date - DateTime.Today).Days;
+
+                <div class="upcoming-card">
+
+                    <div>
+                        <h3>@hedef.IsAdi</h3>
+
+                        <p>
+                            Bitiş:
+                            @hedef.BitisTarihi.ToString("dd.MM.yyyy")
+                        </p>
+                    </div>
+
+                    <div class="remaining-time">
+                        @if (kalanGun == 0)
+                        {
+                            <span>Bugün son gün</span>
+                        }
+                        else if (kalanGun == 1)
+                        {
+                            <span>Yarın bitiyor</span>
+                        }
+                        else
+                        {
+                            <span>@kalanGun gün kaldı</span>
+                        }
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+<div class="ai-card">
+
+    <div class="ai-title">
+        🤖 AI Verimlilik Önerisi
+    </div>
+
+    @if (string.IsNullOrWhiteSpace(Model.AIOnerisi))
+    {
+        <p class="ai-empty">
+            KPI verilerinize göre kişisel bir öneri oluşturabilirsiniz.
+        </p>
+
+        <form asp-controller="Dashboard"
+              asp-action="AiOnerisiOlustur"
+              method="post">
+
+            <button type="submit"
+                    class="ai-button">
+                AI Önerisi Oluştur
+            </button>
+
+        </form>
+    }
+    else
+    {
+        <p class="ai-content">
+            @Model.AIOnerisi
+        </p>
+
+        <form asp-controller="Dashboard"
+              asp-action="AiOnerisiOlustur"
+              method="post">
+
+            <button type="submit"
+                    class="ai-button">
+                Yeniden Oluştur
+            </button>
+
+        </form>
+    }
+
+</div>
+
+<a class="new-target-button-button" href="/Hedef/YeniHedef">
+    Yeni Hedef Oluştur
+</a>
+
+<hr />
+
+<h2 class="section-title"> Hedeflerim</h2>
+
+@if (Model.Hedefler.Count == 0)
+{
+    <p>Henüz oluşturulmuş hedefiniz bulunmuyor.</p>
+}
+else
+{   <div class="table-container">
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>İş</th>
+                <th>Hedef</th>
+                <th>Tamamlanan</th>
+                <th>Başarı</th>
+                <th>Dönem</th>
+                <th>Başlangıç</th>
+                <th>Bitiş</th>
+                <th>Durum</th>
+                <th>Öncelik</th>
+                <th>İşlemler</th>
+                
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var hedef in Model.Hedefler)
+            {
+                <tr>
+                    <td>@hedef.IsAdi</td>
+
+                    <td>@hedef.HedefAdet</td>
+
+                    <td>@hedef.TamamlananAdet</td>
+
+                   <td>
+
+                        <div class="progress">
+
+                            <div class="progress-bar"
+                                style="width:@hedef.BasariYuzdesi%">
+                            </div>
+
+                        </div>
+
+                        <span>
+
+                            %@hedef.BasariYuzdesi.ToString("0.##")
+
+                        </span>
+
+                    </td>
+
+                    <td>@hedef.DonemTipi</td>
+
+                    <td>
+                        @hedef.BaslangicTarihi.ToString("dd.MM.yyyy")
+                    </td>
+
+                    <td>
+                        @hedef.BitisTarihi.ToString("dd.MM.yyyy")
+                    </td>
+
+                   <td>
+
+@if (hedef.Durum == "Geride")
+{
+    <span class="badge danger-badge">
+        🔴 Geride
+    </span>
+}
+else
+{
+    <span class="badge success-badge">
+        🟢 Normal
+    </span>
+}
+
+</td>
+                     <td>
+                        @hedef.Oncelik
+                    </td>
+
+                    <td>
+                        <a class="edit-button" href="/Hedef/Duzenle/@hedef.Id">
+                            Düzenle
+                        </a>
+
+                        <a class="delete-button" href="/Hedef/Sil/@hedef.Id"
+                           onclick="return confirm('Bu hedefi silmek istediğinize emin misiniz?')">
+                            Sil
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+
+}
+
+<hr />
+<div class="dashboard-actions">
+    <a class="dashboard-button" href="/Tamamlananlar/GunlukGiris">
+        Tamamlanan İş Gir
+    </a>
+
+    <a class="dashboard-button" href="/Rapor/Index">
+        Verimlilik Raporu
+    </a>
+</div>  
+</div>
