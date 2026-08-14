@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="auth-page">
+
+    <div class="auth-card register-card">
+
+        <div class="auth-header">
+            <h1>Hesap Oluştur</h1>
+
+            <p>
+                KPI sistemine katılmak için bilgilerinizi girin.
+            </p>
+        </div>
+
+        @if (TempData["Hata"] != null)
+        {
+            <div class="auth-error">
+                @TempData["Hata"]
+            </div>
+        }
+
+        <form asp-controller="Account"
+              asp-action="Register"
+              method="post">
+
+            <div class="auth-form-group">
+                <label>Ad Soyad</label>
+
+                <input type="text"
+                       name="AdSoyad"
+                       placeholder="Adınızı ve soyadınızı girin"
+                       required />
+            </div>
+
+            <div class="auth-form-group">
+                <label>E-posta</label>
+
+                <input type="email"
+                       name="Email"
+                       placeholder="ornek@mail.com"
+                       required />
+            </div>
+
+            <div class="auth-form-group">
+                <label>Şifre</label>
+
+                <input type="password"
+                       name="SifreHash"
+                       placeholder="Şifrenizi oluşturun"
+                       required />
+            </div>
+
+            <div class="auth-form-group">
+                <label>Görev</label>
+
+                <input type="text"
+                       name="Gorev"
+                       placeholder="Örneğin: Yazılım Geliştirici"
+                       required />
+            </div>
+
+            <div class="auth-form-group">
+                <label>Doğum Tarihi</label>
+
+                <input type="date"
+                       name="DogumTarihi"
+                       required />
+            </div>
+
+            <div class="auth-form-group">
+                <label>Yönetici</label>
+
+                <select name="YoneticiId"
+                        required>
+
+                    <option value="">
+                        Yöneticinizi seçiniz
+                    </option>
+
+                    @foreach (var yonetici in ViewBag.Yoneticiler)
+                    {
+                        <option value="@yonetici.Id">
+                            @yonetici.AdSoyad
+                        </option>
+                    }
+
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="auth-button">
+                Kayıt Ol
+            </button>
+
+        </form>
+
+        <div class="auth-footer">
+
+            <span>Zaten hesabınız var mı?</span>
+
+            <a asp-controller="Account"
+               asp-action="Login">
+                Giriş Yap
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

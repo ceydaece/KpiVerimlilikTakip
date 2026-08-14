@@ -1,0 +1,174 @@
+@model List<KpiVerimlilikTakip.Models.ViewModels.VerimlilikRaporuVM>
+
+@{
+    ViewData["Title"] = "Verimlilik Raporu";
+}
+
+<div class="report-page">
+
+    <div class="report-header">
+        <div>
+            <h1 class="report-title">
+                Verimlilik Raporu
+            </h1>
+
+            <p class="report-description">
+                Hedeflerinizi, tamamlanan işleri ve başarı oranlarını inceleyin.
+            </p>
+        </div>
+
+        <a asp-controller="Dashboard"
+           asp-action="Index"
+           class="back-button">
+            Dashboard'a Dön
+        </a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="empty-message">
+            Rapor oluşturmak için henüz yeterli veri bulunmuyor.
+        </div>
+    }
+    else
+    {
+        <div class="report-summary">
+
+            <div class="summary-card">
+                <span>Toplam Hedef</span>
+
+                <strong>
+                    @Model.Sum(x => x.HedefAdet)
+                </strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Toplam Tamamlanan</span>
+
+                <strong>
+                    @Model.Sum(r => r.TamamlananAdet)
+                </strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Ortalama Başarı</span>
+
+                <strong>
+                    @{
+                        var ortalamaBasari = Model.Count > 0
+                            ? Model.Average(r => r.BasariYuzdesi)
+                            : 0;
+                    }
+
+                    %@ortalamaBasari.ToString("0.##")
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="report-table-container">
+
+            <table class="report-table">
+
+                <thead>
+                    <tr>
+                        <th>İş Adı</th>
+                        <th>Hedef</th>
+                        <th>Tamamlanan</th>
+                        <th>Başarı</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var rapor in Model)
+                    {
+                        var progressWidth =
+                            Math.Min(rapor.BasariYuzdesi, 100);
+
+                        var progressClass =
+                            rapor.BasariYuzdesi < 40
+                                ? "progress-low"
+                                : rapor.BasariYuzdesi < 75
+                                    ? "progress-medium"
+                                    : "progress-high";
+
+                        <tr>
+                            <td>@rapor.IsAdi</td>
+
+                            <td>@rapor.HedefAdet</td>
+
+                            <td>@rapor.TamamlananAdet</td>
+
+                            <td>
+
+    @{
+        var yuzde = Math.Min(rapor.BasariYuzdesi, 100);
+    }
+
+    <div class="progress">
+        <div class="progress-bar"
+             style="width:@yuzde%">
+        </div>
+    </div>
+
+    <span class="progress-value">
+        %@rapor.BasariYuzdesi.ToString("0.##")
+    </span>
+
+</td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+    <div class="report-ai-card">
+
+    <div class="ai-title">
+        🤖 AI Verimlilik Analizi
+    </div>
+
+    @if (ViewBag.AiMesaj == null)
+    {
+        <p class="ai-empty">
+            KPI verilerinizi yapay zekâ ile analiz ederek
+            kişisel öneriler alabilirsiniz.
+        </p>
+
+        <form asp-controller="Rapor"
+              asp-action="AiAnaliz"
+              method="post">
+
+            <button type="submit"
+                    class="button button-primary">
+                AI Analizi Oluştur
+            </button>
+
+        </form>
+    }
+    else
+    {
+        <p class="ai-content">
+            @ViewBag.AiMesaj
+        </p>
+
+        <form asp-controller="Rapor"
+              asp-action="AiAnaliz"
+              method="post">
+
+            <button type="submit"
+                    class="button button-primary">
+                Yeniden Analiz Et
+            </button>
+
+        </form>
+    }
+
+</div>
+
+</div>

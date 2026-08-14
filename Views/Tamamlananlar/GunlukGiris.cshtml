@@ -1,0 +1,102 @@
+@model List<KpiVerimlilikTakip.Models.KisiYapacagi>
+
+@{
+    ViewData["Title"] = "Tamamlanan İş Girişi";
+}
+
+<div class="form-page">
+
+    <div class="form-card wide-form-card">
+
+        <h1 class="form-title">
+            Tamamlanan İş Girişi
+        </h1>
+
+        <p class="form-description">
+            Bugün tamamladığınız iş adetlerini girin.
+        </p>
+
+        <form asp-controller="Tamamlananlar"
+              asp-action="GunlukGiris"
+              method="post">
+
+            @if (Model.Count == 0)
+            {
+                <div class="empty-message">
+                    Kayıt girebileceğiniz bir hedef bulunmuyor.
+                </div>
+            }
+            else
+            {
+                <div class="table-scroll">
+
+                    <table class="entry-table">
+
+                        <thead>
+                            <tr>
+                                <th>İş</th>
+                                <th>Hedef</th>
+                                <th>Dönem</th>
+                                <th>Tamamlanan Adet</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        @Model[i].Yapilacaklar?.IsTanimi
+                                    </td>
+
+                                    <td>
+                                        @Model[i].HedefAdet
+                                    </td>
+
+                                    <td>
+                                        @Model[i].DonemTipi
+                                    </td>
+
+                                    <td>
+                                        <input type="hidden"
+                                               name="PlanlananIsId[@i]"
+                                               value="@Model[i].Id" />
+
+                                        <input type="number"
+                                               class="quantity-input"
+                                               name="TamamlananAdet[@i]"
+                                               min="0"
+                                               value="0"
+                                               required />
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="save-button full-width">
+                        Günlük Sonuçları Kaydet
+                    </button>
+
+                    <a asp-controller="Dashboard"
+                       asp-action="Index"
+                       class="cancel-button">
+                        İptal
+                    </a>
+
+                </div>
+            }
+
+        </form>
+
+    </div>
+
+</div>

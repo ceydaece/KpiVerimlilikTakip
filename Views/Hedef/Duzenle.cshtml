@@ -1,0 +1,146 @@
+@model KpiVerimlilikTakip.Models.KisiYapacagi
+
+@{
+    ViewData["Title"] = "Hedef Düzenle";
+}
+
+<div class="form-page">
+
+    <div class="form-card">
+
+        <h1 class="form-title">
+            Hedef Düzenle
+        </h1>
+
+        <p class="form-description">
+            Hedef bilgilerini güncelleyin.
+        </p>
+
+        @if (TempData["HataMesaji"] != null)
+        {
+            <div class="error-message">
+                @TempData["HataMesaji"]
+            </div>
+        }
+
+        <form asp-controller="Hedef"
+              asp-action="Duzenle"
+              method="post">
+
+            <input type="hidden"
+                   asp-for="Id" />
+
+            <div class="form-group">
+
+                <label asp-for="IsId">
+                    Yapılacak İş
+                </label>
+
+                <select asp-for="IsId"
+                        required>
+
+                    <option value="">
+                        İş seçiniz
+                    </option>
+
+                    @foreach (var isItem in ViewBag.Yapilacaklar)
+                    {
+                        <option value="@isItem.Id">
+                            @isItem.IsTanimi
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="HedefAdet">
+                    Hedef Adedi
+                </label>
+
+                <input asp-for="HedefAdet"
+                       type="number"
+                       min="1"
+                       required />
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="DonemTipi">
+                    Dönem
+                </label>
+
+                <select asp-for="DonemTipi"
+                        required>
+
+                    <option value="">
+                        Dönem seçiniz
+                    </option>
+
+                    <option value="Gunluk">
+                        Günlük
+                    </option>
+
+                    <option value="Haftalik">
+                        Haftalık
+                    </option>
+
+                    <option value="Aylik">
+                        Aylık
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="date-fields">
+
+                <div class="form-group">
+
+                    <label asp-for="BaslangicTarihi">
+                        Başlangıç Tarihi
+                    </label>
+
+                    <input asp-for="BaslangicTarihi"
+                           type="date"
+                           required />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="BitisTarihi">
+                        Bitiş Tarihi
+                    </label>
+
+                    <input asp-for="BitisTarihi"
+                           type="date"
+                           required />
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="save-button">
+                    Değişiklikleri Kaydet
+                </button>
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="cancel-button">
+                    İptal
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

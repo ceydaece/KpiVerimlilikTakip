@@ -1,0 +1,175 @@
+@{
+    ViewData["Title"] = "Yeni Hedef";
+}
+
+<div class="form-page">
+
+    <div class="form-card">
+
+        <h1 class="form-title">
+            Yeni Hedef Oluştur
+        </h1>
+
+        <p class="form-description">
+            Yapılacak işi, hedef adedini ve hedef dönemini belirleyin.
+        </p>
+
+        @if (TempData["HataMesaji"] != null)
+        {
+            <div class="error-message">
+                @TempData["HataMesaji"]
+            </div>
+        }
+
+        <form asp-controller="Hedef"
+              asp-action="YeniHedef"
+              method="post">
+
+            @if (ViewBag.YoneticiMi == true)
+            {
+                <div class="form-group">
+                    <label for="KisiId">
+                        Çalışan
+                    </label>
+
+                    <select id="KisiId"
+                            name="KisiId"
+                            required>
+
+                        <option value="">
+                            Çalışan seçiniz
+                        </option>
+
+                        @foreach (var calisan in ViewBag.Calisanlar)
+                        {
+                            if (ViewBag.SecilenKisiId != null &&
+                                calisan.Id == (int)ViewBag.SecilenKisiId)
+                            {
+                                <option value="@calisan.Id" selected>
+                                    @calisan.AdSoyad
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@calisan.Id">
+                                    @calisan.AdSoyad
+                                </option>
+                            }
+                        }
+
+                    </select>
+                </div>
+            }
+
+            <div class="form-group">
+                <label for="IsId">
+                    Yapılacak İş
+                </label>
+
+                <select id="IsId"
+                        name="IsId"
+                        required>
+
+                    <option value="">
+                        İş seçiniz
+                    </option>
+
+                    @foreach (var isItem in ViewBag.Yapilacaklar)
+                    {
+                        <option value="@isItem.Id">
+                            @isItem.IsTanimi
+                        </option>
+                    }
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="HedefAdet">
+                    Hedef Adedi
+                </label>
+
+                <input type="number"
+                       id="HedefAdet"
+                       name="HedefAdet"
+                       min="1"
+                       max="1000"
+                       required />
+            </div>
+
+            <div class="form-group">
+                <label for="DonemTipi">
+                    Dönem
+                </label>
+
+                <select id="DonemTipi"
+                        name="DonemTipi"
+                        required>
+
+                    <option value="">
+                        Dönem seçiniz
+                    </option>
+
+                    <option value="Gunluk">
+                        Günlük
+                    </option>
+
+                    <option value="Haftalik">
+                        Haftalık
+                    </option>
+
+                    <option value="Aylik">
+                        Aylık
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="date-fields">
+
+                <div class="form-group">
+                    <label for="BaslangicTarihi">
+                        Başlangıç Tarihi
+                    </label>
+
+                    <input type="date"
+                           id="BaslangicTarihi"
+                           name="BaslangicTarihi"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label for="BitisTarihi">
+                        Bitiş Tarihi
+                    </label>
+
+                    <input type="date"
+                           id="BitisTarihi"
+                           name="BitisTarihi"
+                           required />
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="save-button">
+                    @(ViewBag.YoneticiMi == true
+                        ? "Hedefi Çalışana Ata"
+                        : "Hedefi Kaydet")
+                </button>
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="cancel-button">
+                    İptal
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
