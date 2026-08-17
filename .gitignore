@@ -7,3 +7,14 @@ obj/
 
 *.user
 *.suo
+
+# Local databases and SQLite tooling
+*.db
+*.db-shm
+*.db-wal
+*.sqbpro
+
+# Local secrets and environment overrides
+appsettings.Local.json
+.env
+.env.*
