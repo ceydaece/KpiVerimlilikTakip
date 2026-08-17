@@ -1,6 +1,8 @@
 using KpiVerimlilikTakip.Services;
 using KpiVerimlilikTakip.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using KpiVerimlilikTakip.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(
@@ -12,9 +14,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<AiService>();
+builder.Services.AddScoped<IPasswordHasher<Kisi>, PasswordHasher<Kisi>>();
 builder.Services.AddSession();
 
 var app = builder.Build();
+
+await DbInitializer.InitializeAsync(app.Services);
+
 app.UseSession();
 
 // Configure the HTTP request pipeline.

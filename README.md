@@ -28,6 +28,39 @@ The system allows employees and managers to define performance targets, record c
 - JavaScript
 - Git & GitHub
 
+## Getting Started
+
+### Prerequisites
+
+- .NET 10 SDK
+
+### Run locally
+
+```bash
+git clone https://github.com/ceydaece/KpiVerimlilikTakip.git
+cd KpiVerimlilikTakip
+dotnet restore
+dotnet run
+```
+
+The SQLite database is created automatically on first run with anonymous demo data.
+
+Demo accounts:
+
+- Manager: `manager@example.com`
+- Employee: `employee@example.com`
+- Password: `Demo123!`
+
+The demo password is hashed before it is stored in the local database.
+
+### Optional Gemini integration
+
+The application reads the Gemini API key from configuration. Keep the key outside source control by using .NET User Secrets:
+
+```bash
+dotnet user-secrets set "Gemini:ApiKey" "YOUR_API_KEY"
+```
+
 ## Architecture
 
 The application follows the Model-View-Controller (MVC) architecture.

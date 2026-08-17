@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using KpiVerimlilikTakip.Data;
 using KpiVerimlilikTakip.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 namespace KpiVerimlilikTakip.Controllers
 
 
@@ -9,9 +10,12 @@ namespace KpiVerimlilikTakip.Controllers
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
-       public AccountController(AppDbContext context)
+        private readonly IPasswordHasher<Kisi> _passwordHasher;
+
+       public AccountController(AppDbContext context, IPasswordHasher<Kisi> passwordHasher)
             {
                 _context = context;
+                _passwordHasher = passwordHasher;
             }
  
         [HttpGet]
@@ -41,6 +45,7 @@ namespace KpiVerimlilikTakip.Controllers
             }
             kisi.KayitTarihi = DateTime.Now;
             kisi.Yetki = "Calisan";
+            kisi.SifreHash = _passwordHasher.HashPassword(kisi, kisi.SifreHash);
 
 var yoneticiVarMi = _context.Kisiler.Any(k =>
     k.Id == kisi.YoneticiId &&
@@ -69,12 +74,13 @@ if (!yoneticiVarMi)
         [HttpPost]
 public IActionResult Login(Kisi kisi)
 {
-    var bulunanKisi = _context.Kisiler.FirstOrDefault(k =>
-        k.Email == kisi.Email &&
-        k.SifreHash == kisi.SifreHash
-    );
+    var bulunanKisi = _context.Kisiler.FirstOrDefault(k => k.Email == kisi.Email);
 
-    if (bulunanKisi == null)
+    if (bulunanKisi == null ||
+        _passwordHasher.VerifyHashedPassword(
+            bulunanKisi,
+            bulunanKisi.SifreHash,
+            kisi.SifreHash) == PasswordVerificationResult.Failed)
     {
         TempData["Hata"] = "Email veya şifre hatalı.";
         return RedirectToAction("Login");
